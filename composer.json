@@ -1,0 +1,25 @@
+{
+    "name": "vpgame/micro-services",
+    "description": "Lumen microservices installer.",
+    "keywords": ["vpgame", "lumen"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "wangzhenyi",
+            "email": "wangzhenyi2011@163.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lumen\\Installer\\Console\\": "src/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "~4.0|~5.0|~6.0",
+        "symfony/console": "~2.3|~3.0",
+        "symfony/process": "~2.3|~3.0"
+    },
+    "bin": [
+        "vpgame"
+    ]
+}
