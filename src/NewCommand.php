@@ -20,7 +20,7 @@ class NewCommand extends Command
     {
         $this
             ->setName('new')
-            ->setDescription('Create a new Lumen application.')
+            ->setDescription('Create a new Micro-services VPGAME.')
             ->addArgument('name', InputArgument::REQUIRED)
             ->addArgument('remote', InputArgument::REQUIRED);
     }
@@ -34,7 +34,6 @@ class NewCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $this->verifyApplicationDoesntExist(
             $directory = getcwd().'/'.$input->getArgument('name'),
             $output
@@ -43,13 +42,7 @@ class NewCommand extends Command
         $remote = $input->getArgument('remote');
         $output->writeln('<info>Crafting application...</info>');
         exec('git clone '.$remote);
-        rename(getcwd().'/lumen',$input->getArgument('name'));
-        /*
-        $this->download($zipFile = $this->makeFilename())
-             ->extract($zipFile, $directory)
-             ->cleanUp($zipFile);
-
-        */
+        rename(getcwd().'/lumen', $input->getArgument('name'));
 
         $output->writeln('<comment>Application ready! Build something amazing.</comment>');
     }
@@ -65,65 +58,5 @@ class NewCommand extends Command
         if (is_dir($directory)) {
             throw new RuntimeException('Application already exists!');
         }
-    }
-
-    /**
-     * Generate a random temporary filename.
-     *
-     * @return string
-     */
-    protected function makeFilename()
-    {
-        return getcwd().'/lumen_'.md5(time().uniqid()).'.zip';
-    }
-
-    /**
-     * Download the temporary Zip to the given file.
-     *
-     * @param  string  $zipFile
-     * @return $this
-     */
-    protected function download($zipFile)
-    {
-        $response = (new Client)->get('http://cabinet.laravel.com/latest_lumen.zip');
-
-        file_put_contents($zipFile, $response->getBody());
-
-        return $this;
-    }
-
-    /**
-     * Extract the zip file into the given directory.
-     *
-     * @param  string  $zipFile
-     * @param  string  $directory
-     * @return $this
-     */
-    protected function extract($zipFile, $directory)
-    {
-        $archive = new ZipArchive;
-
-        $archive->open($zipFile);
-
-        $archive->extractTo($directory);
-
-        $archive->close();
-
-        return $this;
-    }
-
-    /**
-     * Clean-up the Zip file.
-     *
-     * @param  string  $zipFile
-     * @return $this
-     */
-    protected function cleanUp($zipFile)
-    {
-        @chmod($zipFile, 0777);
-
-        @unlink($zipFile);
-
-        return $this;
     }
 }
