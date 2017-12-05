@@ -39,10 +39,44 @@ class NewCommand extends Command
             $output
         );
 
+
+        $this->verifyApplicationDoesntExist(
+             $directory = getcwd().'/lumen',
+             $output
+         );
+
         $remote = $input->getArgument('remote');
         $output->writeln('<info>Crafting application...</info>');
-        exec('git clone '.$remote);
-        rename(getcwd().'/lumen', $input->getArgument('name'));
+        exec('git clone '.$remote, $out, $renturn_val);
+
+        if ($renturn_val === 0) {
+            $output->writeln('<comment>Success of micro service cloning.</comment>');
+        }
+
+        $rename = rename(getcwd().'/lumen', $input->getArgument('name'));
+        if($rename === true){
+            $output->writeln('<comment>The name of the project is: '.$input->getArgument('name').'.</comment>');
+        }
+        chdir($input->getArgument('name'));
+        exec("php -r \"copy('.env.tp', '.env');\"", $out, $res);
+        if ($res ===0) {
+            $output->writeln('<comment>Create a successful .env.</comment>');
+        }
+
+        exec('rm -rf '.getcwd().'/.git', $Out, $clear_res);
+        if ($clear_res ===0) {
+            $output->writeln('<comment>Clear .git file success</comment>');
+        }
+
+        $webcontent = file_get_contents('routes/web.php');
+        $webcontent = sprintf($webcontent, $input->getArgument('name'));
+        file_put_contents('routes/web.php', $webcontent);
+
+        $appcontent = file_get_contents('bootstrap/app.php');
+        $appcontent = sprintf($appcontent, $input->getArgument('name'));
+        file_put_contents('bootstrap/app.php', $appcontent);
+
+        exec("composer install", $out, $res);
 
         $output->writeln('<comment>Application ready! Build something amazing.</comment>');
     }
